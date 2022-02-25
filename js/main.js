@@ -16,28 +16,40 @@ $(document).ready(function(){
     ];
     let clickedPlayers = ["","","","","","","","",""]
 
+    $("#turn").html("Turno de " + player1);
+
     $(".cells").on("click", function(e){
         if(!ganador) {
-            console.log(clickedPlayers.length);
-            let boardClicked = parseInt($(this).attr("data-cell-index"));
-            let player = clicks % 2 == 0 ? player1 : player2;   
-
             if(e.target.innerHTML == "") {
+                let boardClicked = parseInt($(this).attr("data-cell-index"));
+                let player = selectPlayer(clicks, player1, player2);
+
                 $(e.target).html(player);
+
                 clickedPlayers[boardClicked] = player;
                 clicks++;
 
-                console.log(clickedPlayers);
+                $("#turn").html("Turno de " + selectPlayer(clicks, player1, player2));
                 if(compruebaGanar(player)) {
+                    $("#turn").html("");
                     $("#message").html(player == "X" ? "Jugador X ha ganado!" : "Jugador O ha ganado!");
+
+                    let result = parseInt($("."+player).text());
+                    //$("."+player).html("");
+                    $("."+player).html(result + 1);
                     generarReiniciar();
                 }else if(compruebaEmpate()) {
+                    $("#turn").html("");
                     $("#message").html("Empate!");
                     generarReiniciar();
                 }
             }
         }
     });
+
+    function selectPlayer(clicks, player1, player2) {
+        return clicks % 2 == 0 ? player1 : player2;
+    }
 
     $("#btnReiniciar").on("click", function() {
         for (let i = 0; i < 9; i++) {
@@ -46,6 +58,7 @@ $(document).ready(function(){
         $(".cells").html("");
         $("#message").html("");
         $("#btnReiniciar").addClass("d-none");
+        $("#turn").html("Turno de " + player1);
         ganador = false;
         clicks = 0;
     });
